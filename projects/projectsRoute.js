@@ -1,5 +1,7 @@
 const express = require("express");
 const Projects = require("../data/helpers/projectModel");
+const Actions = require("../data/helpers/actionModel");
+const { validateAction } = require("../actions/actionsRoute");
 const router = express.Router();
 
 // **All these helper methods return a promise. Remember to use .then().catch() or async/await.**
@@ -34,6 +36,21 @@ router.post("/", validateProject, async (req, res) => {
     res.status(400).json({ error: "only allowed name and description " });
   }
 });
+
+router.post(
+  "/:id/actions",
+  validateProjectId,
+  validateAction,
+  async (req, res) => {
+    try {
+      req.body.project_id = req.project.id;
+      const action = await Actions.insert(req.body);
+      res.status(201).json(action);
+    } catch {
+      res.status(400).json({ error: "only allowed notes and description " });
+    }
+  }
+);
 
 router.put("/:id", validateProject, validateProjectId, async (req, res) => {
   try {
@@ -79,4 +96,5 @@ function validateProject(req, res, next) {
     next();
   }
 }
+
 module.exports = router;

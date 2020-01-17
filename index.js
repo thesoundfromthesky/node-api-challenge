@@ -1,5 +1,6 @@
 const express = require("express");
 const projectsRoute = require("./projects/projectsRoute");
+const { router: actionsRoute } = require("./actions/actionsRoute");
 /*
 play this: https://www.youtube.com/watch?v=d-diB65scQU
 
@@ -22,6 +23,7 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 server.use("/api/projects", projectsRoute);
+server.use("/api/actions", actionsRoute);
 
 server.listen(port, () => {
   console.log(`Server on ${port}`);
