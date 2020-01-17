@@ -28,8 +28,18 @@ router.get("/:id", validateProjectId, async (req, res) => {
 
 router.post("/", validateProject, async (req, res) => {
   try {
-    const project = await Projects.insert(req.project);
+    const project = await Projects.insert(req.body);
     res.status(201).json(project);
+  } catch {
+    res.status(400).json({ error: "only allowed name and description " });
+  }
+});
+
+router.put("/:id", validateProject, validateProjectId, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const project = await Projects.update(id, req.body);
+    res.status(200).json(project);
   } catch {
     res.status(400).json({ error: "only allowed name and description " });
   }
@@ -56,7 +66,6 @@ function validateProject(req, res, next) {
   } else if (!req.body.name || !req.body.description) {
     res.status(400).json({ error: "Missing name or description" });
   } else {
-    req.project = req.body;
     next();
   }
 }
