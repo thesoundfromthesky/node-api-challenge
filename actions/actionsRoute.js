@@ -16,20 +16,18 @@ router.get("/:id", validateActionId, (req, res) => {
   res.status(200).json(req.action);
 });
 
-router.put("/:id", validateProject, validateProjectId, async (req, res) => {
+router.put("/:id", validateAction, validateActionId, async (req, res) => {
   try {
-    const id = req.params.id;
-    const project = await Projects.update(id, req.body);
-    res.status(200).json(project);
+    const action = await Actions.update(req.action.id, req.body);
+    res.status(200).json(action);
   } catch {
-    res.status(400).json({ error: "only allowed name and description " });
+    res.status(400).json({ error: "only allowed notes and description " });
   }
 });
 
-router.delete("/:id", validateProjectId, async (req, res) => {
+router.delete("/:id", validateActionId, async (req, res) => {
   try {
-    const id = req.params.id;
-    const project = await Projects.remove(id);
+    const action = await Actions.remove(req.action.id);
     res.sendStatus(204);
   } catch {
     res.status(500).json({ error: "Internal Error" });
@@ -56,31 +54,6 @@ function validateAction(req, res, next) {
     res.status(400).json({ message: "missing description and notes" });
   } else if (!req.body.description || !req.body.notes) {
     res.status(400).json({ error: "Missing description or notes" });
-  } else {
-    next();
-  }
-}
-
-async function validateProjectId(req, res, next) {
-  try {
-    const id = req.params.id;
-    const project = await Projects.get(id);
-    if (project) {
-      req.project = project;
-      next();
-    } else {
-      res.status(403).json({ error: "Project not found" });
-    }
-  } catch {
-    res.status(500).json({ error: "Internal Error" });
-  }
-}
-
-function validateProject(req, res, next) {
-  if (!Object.keys(req.body).length) {
-    res.status(400).json({ message: "missing name and description" });
-  } else if (!req.body.name || !req.body.description) {
-    res.status(400).json({ error: "Missing name or description" });
   } else {
     next();
   }
