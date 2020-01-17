@@ -1,3 +1,5 @@
+const express = require("express");
+const projectsRoute = require("./projects/projectsRoute");
 /*
 play this: https://www.youtube.com/watch?v=d-diB65scQU
 
@@ -12,3 +14,15 @@ I need this code, but don't know where, perhaps should make some middleware, don
 
 Go code!
 */
+
+const server = express();
+const port = process.env.PORT || 8000;
+
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
+
+server.use("/api/projects", projectsRoute);
+
+server.listen(port, () => {
+  console.log(`Server on ${port}`);
+});
