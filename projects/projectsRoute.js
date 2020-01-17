@@ -45,6 +45,16 @@ router.put("/:id", validateProject, validateProjectId, async (req, res) => {
   }
 });
 
+router.delete("/:id", validateProjectId, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const project = await Projects.remove(id);
+    res.sendStatus(204);
+  } catch {
+    res.status(500).json({ error: "Internal Error" });
+  }
+});
+
 async function validateProjectId(req, res, next) {
   try {
     const id = req.params.id;
